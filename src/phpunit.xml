@@ -2,6 +2,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
+         cacheResultFile="/tmp/kintai-phpunit.result.cache"
          colors="true"
 >
     <testsuites>
@@ -19,11 +20,16 @@
     </coverage>
     <php>
         <server name="APP_ENV" value="testing"/>
+        <server name="APP_DEBUG" value="false"/>
+        <server name="APP_KEY" value="base64:T8oJuLQRG05wGqv6lhLg+VtDn7XZ4Wnw8w+2eRGpne8="/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
-        <server name="DB_CONNECTION" value="sqlite"/> 
-        <server name="DB_DATABASE" value=":memory:"/> 
+        <server name="DB_CONNECTION" value="sqlite"/>
+        <server name="DB_DATABASE" value="database/testing.sqlite"/>
         <server name="MAIL_MAILER" value="array"/>
+        <server name="LOG_CHANNEL" value="stderr"/>
+        <server name="LOG_DEPRECATIONS_CHANNEL" value="null"/>
+        <server name="VIEW_COMPILED_PATH" value="/tmp/kintai-test-views"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>

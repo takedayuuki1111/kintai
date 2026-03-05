@@ -13,8 +13,9 @@ class AttendanceController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $today = now()->format('Y-m-d');
-        $attendance = Attendance::where('user_id', $user->id)->where('date', $today)->first();
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('date', Carbon::today())
+            ->first();
 
         if (!$attendance) {
             $status = 0;

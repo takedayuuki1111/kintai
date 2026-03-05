@@ -33,23 +33,24 @@ class AttendanceStampTest extends TestCase
     {
         $response = $this->get('/attendance');
         $response->assertStatus(200);
-        $response->assertSee('勤務開始');
+        $response->assertSee('出勤');
         $response->assertDontSee('勤務終了'); 
     }
 
     public function test_can_start_work()
     {
-        $response = $this->post('/attendance/start');
+        $this->post('/attendance/start');
 
-        $this->assertDatabaseHas('attendances', [
-            'user_id' => $this->user->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-        ]);
+        $this->assertTrue(
+            Attendance::where('user_id', $this->user->id)
+                ->whereDate('date', Carbon::today())
+                ->exists()
+        );
 
         $response = $this->get('/attendance');
         $response->assertSee('勤務終了');
-        $response->assertSee('休憩開始');
-        $response->assertDontSee('勤務開始'); 
+        $response->assertSee('休憩入');
+        $response->assertDontSee('>出勤<', false); 
     }
 
     public function test_cannot_start_work_twice_a_day()
@@ -72,8 +73,8 @@ class AttendanceStampTest extends TestCase
         ]);
         
         $response = $this->get('/attendance');
-        $response->assertSee('休憩終了');
-        $response->assertDontSee('休憩開始');
+        $response->assertSee('休憩戻');
+        $response->assertDontSee('休憩入');
 
         $this->post('/attendance/rest/end');
         
@@ -87,11 +88,12 @@ class AttendanceStampTest extends TestCase
 
         $this->post('/attendance/end');
 
-        $this->assertDatabaseMissing('attendances', [
-            'user_id' => $this->user->id,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'end_time' => null, 
-        ]);
+        $this->assertFalse(
+            Attendance::where('user_id', $this->user->id)
+                ->whereDate('date', Carbon::today())
+                ->whereNull('end_time')
+                ->exists()
+        );
 
         $response = $this->get('/attendance');
         $response->assertSee('退勤しました');
