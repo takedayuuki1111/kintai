@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrectionRequest;
 use Carbon\Carbon;
@@ -77,7 +78,7 @@ class StampCorrectionRequestController extends Controller
             return redirect()->route('admin.correction.approve.show', $id)->with('message', 'この申請はすでに承認済みです。');
         }
 
-        \DB::transaction(function () use ($correction_request, $attendance) {
+        DB::transaction(function () use ($correction_request, $attendance) {
             $attendance->update([
                 'start_time' => Carbon::parse($correction_request->start_time)->format('H:i:s'),
                 'end_time'   => $correction_request->end_time
