@@ -78,7 +78,7 @@ docker-compose exec php chmod -R 775 storage bootstrap/cache
 ## テスト実行
 ```bash
 cd src
-composer test
+/usr/bin/php8.1 ./vendor/bin/phpunit
 ```
 
 ## 補足
