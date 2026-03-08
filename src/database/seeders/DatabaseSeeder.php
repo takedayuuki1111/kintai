@@ -14,35 +14,45 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        Admin::create([
-            'name' => '管理者A',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-        ]);
+        Admin::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => '管理者A',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        $user = User::create([
-            'name' => 'テスト太郎',
-            'email' => 'test@example.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-        ]);
+        $user = User::updateOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'テスト太郎',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         for ($i = 1; $i <= 5; $i++) {
             $date = Carbon::today()->subDays($i);
-            $attendance = Attendance::create([
-                'user_id' => $user->id,
-                'worked_on' => $date->toDateString(),
-                'start_time' => $date->setTime(9, 0),
-                'end_time' => $date->setTime(18, 0),
-                'rest_seconds' => 3600, // 1h break
-                'is_paid_rest' => false,
-            ]);
+            $attendance = Attendance::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'date' => $date->toDateString(),
+                ],
+                [
+                    'start_time' => $date->copy()->setTime(9, 0),
+                    'end_time' => $date->copy()->setTime(18, 0),
+                ]
+            );
 
-            Rest::create([
-                'attendance_id' => $attendance->id,
-                'start_time' => $date->setTime(12, 0),
-                'end_time' => $date->setTime(13, 0),
-            ]);
+            Rest::updateOrCreate(
+                [
+                    'attendance_id' => $attendance->id,
+                    'start_time' => $date->copy()->setTime(12, 0),
+                ],
+                [
+                    'end_time' => $date->copy()->setTime(13, 0),
+                ]
+            );
         }
     }
 }

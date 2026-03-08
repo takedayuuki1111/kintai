@@ -85,4 +85,7 @@ cd src
 - ローカルに `docker/mysql/data` 配下が未追跡で増えることがあります（MySQLの実行データ）。
 - 権限エラーが出る場合は、`src/storage` および `src/bootstrap/cache` の書き込み権限を確認してください。
 
+## 変更仕様書（再提出）
+- テーブル仕様・Seeder変更内容: `docs/table-spec-and-seeder-notes.md`
+
 
